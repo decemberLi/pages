@@ -1,7 +1,7 @@
 'use strict';
 const MANIFEST = 'pages/flutter-app-manifest';
 const TEMP = 'pages/flutter-temp-cache';
-const CACHE_NAME = 'flutter-app-cache';
+const CACHE_NAME = 'pages/flutter-app-cache';
 const RESOURCES = {
   "pages/version.json": "6dff225a377191a79ea4369e2c2fed7c",
   "pages/index.html": "b3e7d6ee31d13acd1bdfbf32c17624be",
