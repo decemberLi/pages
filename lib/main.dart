@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController _nameController = TextEditingController();
 
   String jsonToDart(Map<String, dynamic> json, String name) {
-    String result = "class $name {\n";
+    String result = "class ${name.upFirst} {\n";
     List<String> subClass = [];
     String initName = "  $name(Map<String,dynamic> json) {\n";
     String jsonFunc =
@@ -78,15 +78,15 @@ class _MyHomePageState extends State<MyHomePage> {
       } else if (value is List<double>) {
         appendValue("List<double>", key);
       } else if (value is Map<String, dynamic>) {
-        var subName = name + key.upFirst;
+        var subName = name.upFirst + key.upFirst;
         result += "  $subName $key;\n";
         initName += "    this.$key = $subName(json[\"$key\"]);\n";
         jsonFunc += "    result[\"$key\"] = this.$key.json;\n";
         subClass.add(jsonToDart(value, subName));
-      } else if (value is List<Map<String, dynamic>>) {
+      } else if (value is List<dynamic>) {
         try {
           var first = value.first;
-          var subName = name + key.upFirst;
+          var subName = name.upFirst + key.upFirst;
           result += "  $subName $key;\n";
           initName +=
               "    this.$key = json[\"$key\"].map((e)=>$subName(e)).toList();\n";
