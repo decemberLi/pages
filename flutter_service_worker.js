@@ -1,11 +1,11 @@
 'use strict';
-const MANIFEST = 'flutter-app-manifest';
-const TEMP = 'flutter-temp-cache';
+const MANIFEST = 'pages/flutter-app-manifest';
+const TEMP = 'pages/flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
   "pages/version.json": "6dff225a377191a79ea4369e2c2fed7c",
   "pages/index.html": "b3e7d6ee31d13acd1bdfbf32c17624be",
-  "/": "b3e7d6ee31d13acd1bdfbf32c17624be",
+  "pages/": "b3e7d6ee31d13acd1bdfbf32c17624be",
   "pages/main.dart.js": "6fab9441b5c0ed4d4b731e89b96f539e",
   "pages/favicon.png": "5dcef449791fa27946b3d35ad8803796",
   "pages/icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
@@ -21,7 +21,7 @@ const RESOURCES = {
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = [
-  "/",
+  "pages/",
   "pages/main.dart.js",
   "pages/index.html",
   "pages/assets/NOTICES",
@@ -66,7 +66,7 @@ self.addEventListener("activate", function (event) {
       for (var request of await contentCache.keys()) {
         var key = request.url.substring(origin.length + 1);
         if (key == "") {
-          key = "/";
+          key = "pages/";
         }
         // If a resource from the old manifest is not in the new cache, or if
         // the MD5 sum has changed, delete it. Otherwise the resource is left
@@ -108,7 +108,7 @@ self.addEventListener("fetch", (event) => {
     key = key.split('?v=')[0];
   }
   if (event.request.url == origin || event.request.url.startsWith(origin + '/#') || key == '') {
-    key = '/';
+    key = 'pages/';
   }
   // If the URL is not the RESOURCE list then return to signal that the
   // browser should take over.
@@ -155,7 +155,7 @@ async function downloadOffline() {
   for (var request of await contentCache.keys()) {
     var key = request.url.substring(origin.length + 1);
     if (key == "") {
-      key = "/";
+      key = "pages/";
     }
     currentContent[key] = true;
   }
