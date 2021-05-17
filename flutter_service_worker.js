@@ -4,9 +4,9 @@ const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
   "version.json": "6dff225a377191a79ea4369e2c2fed7c",
-  "index.html": "3fce9bcd104341c87c436038c1217fd9",
-  "/": "3fce9bcd104341c87c436038c1217fd9",
-  "main.dart.js": "5a29a3aec0983545ea3add696132a3c9",
+  "index.html": "fe53a412bd5091432128ee3a85661046",
+  "/": "fe53a412bd5091432128ee3a85661046",
+  "main.dart.js": "065cb05d7d49a7092416ac914c3209a5",
   "favicon.png": "5dcef449791fa27946b3d35ad8803796",
   "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
   "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
@@ -32,7 +32,7 @@ self.addEventListener("install", (event) => {
   self.skipWaiting();
   return event.waitUntil(
     caches.open(TEMP).then((cache) => {
-      cache.addAll(
+      return cache.addAll(
         CORE.map((value) => new Request(value + '?revision=' + RESOURCES[value], { 'cache': 'reload' })));
     })
   );

@@ -53877,7 +53877,7 @@ r=C.c.fo(q,0,1,J.bi(q).U(q,0,1).toUpperCase())+C.c.fo(a,0,1,J.bi(a).U(a,0,1).toU
 q=o.a
 q.a=q.a+("  "+H.c(r)+" "+a+";\n")
 q.b=q.b+("    this."+a+' = json["'+a+'"].map((e)=>'+H.c(r)+"(e)).toList();\n")
-q.c=q.c+('    result["'+a+'"] = this.'+a+".json.map((e)=>e.json).toList();\n")
+q.c=q.c+('    result["'+a+'"] = this.'+a+".map((e)=>e.json).toList();\n")
 o.e.push(o.b.xo(s,r))}catch(p){H.a1(p)}},
 $S:335}
 F.Zb.prototype={
