@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -46,17 +48,78 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  TextEditingController _inputController = TextEditingController();
+  TextEditingController _controller = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+  String jsonToDart(Map<String, dynamic> json, String name) {
+    String result = "class $name {\n";
+    List<String> subClass = [];
+    String initName = "  $name(Map<String,dynamic> json) {\n";
+    String jsonFunc =
+        "  Map<String,dynamic> get json {\n    var result = Map<String,dynamic>();\n";
+    appendValue(String name, String key) {
+      result += "  $name $key;\n";
+      initName += "    this.$key = json[\"$key\"] as $name;\n";
+      jsonFunc += "    result[\"$key\"] = this.$key;\n";
+    }
+
+    json.forEach((key, value) {
+      if (value is String) {
+        appendValue("String", key);
+      } else if (value is int) {
+        appendValue("int", key);
+      } else if (value is double) {
+        appendValue("double", key);
+      } else if (value is List<String>) {
+        appendValue("List<String>", key);
+      } else if (value is List<int>) {
+        appendValue("List<int>", key);
+      } else if (value is List<double>) {
+        appendValue("List<double>", key);
+      } else if (value is Map<String, dynamic>) {
+        var subName = name + key.upFirst;
+        result += "  $subName $key;\n";
+        initName += "    this.$key = $subName(json[\"$key\"]);\n";
+        jsonFunc += "    result[\"$key\"] = this.$key.json;\n";
+        subClass.add(jsonToDart(value, subName));
+      } else if (value is List<Map<String, dynamic>>) {
+        try {
+          var first = value.first;
+          var subName = name + key.upFirst;
+          result += "  $subName $key;\n";
+          initName +=
+              "    this.$key = json[\"$key\"].map((e)=>$subName(e)).toList();\n";
+          jsonFunc +=
+              "    result[\"$key\"] = this.$key.json.map((e)=>e.json).toList();\n";
+          subClass.add(jsonToDart(first, subName));
+        } catch (e) {}
+      }
     });
+    initName += "  }\n";
+    result += initName;
+    jsonFunc += "    return result;\n  }\n";
+    result += jsonFunc;
+    result += "}\n";
+    subClass.forEach((element) {
+      result += element;
+    });
+    return result;
+  }
+
+  showAlert() {
+    var alert = AlertDialog(
+      title: Text("Please Input Class Name"),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text("OK"),
+        ),
+      ],
+    );
+    showDialog(context: context, builder: (c) => alert);
   }
 
   @override
@@ -68,41 +131,98 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+      body: Container(
+        padding: EdgeInsets.all(20),
+        child: Row(
+          children: [
+            Expanded(
+              child: Container(
+                height: 300,
+                child: TextField(
+                  controller: _inputController,
+                  autofocus: true,
+                  maxLines: 20,
+                  decoration: InputDecoration(
+                    labelText: 'JSON',
+                    labelStyle: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 12,
+                    ),
+                    helperText: 'input json',
+                    hintText: 'input json ...',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.pink,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            Container(
+              padding: EdgeInsets.all(20),
+              height: 200,
+              child: Column(
+                children: [
+                  Container(
+                    height: 60,
+                    width: 60,
+                    child: TextField(
+                      controller: _nameController,
+                      decoration: InputDecoration(
+                          hintText: "Class name",
+                          hintStyle: TextStyle(
+                            fontSize: 10,
+                          )),
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(10)),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_nameController.text.length == 0) {
+                        showAlert();
+                        return;
+                      }
+                      Map<String, dynamic> jsonValue =
+                          json.decode(_inputController.text);
+                      _controller.text =
+                          jsonToDart(jsonValue, _nameController.text);
+                    },
+                    child: Text("->"),
+                  )
+                ],
+              ),
+            ),
+            Expanded(
+              child: Container(
+                height: 300,
+                child: TextField(
+                  controller: _controller,
+                  maxLines: 10000,
+                  decoration: InputDecoration(
+                    labelText: 'Dart Class',
+                    labelStyle: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 12,
+                    ),
+                    helperText: 'result class',
+                    hintText: 'result class',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.pink,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+}
+
+extension FirstUp on String {
+  String get upFirst => replaceRange(0, 1, substring(0, 1).toUpperCase());
 }
