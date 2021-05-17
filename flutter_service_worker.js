@@ -3,37 +3,37 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "version.json": "6dff225a377191a79ea4369e2c2fed7c",
-"index.html": "b3e7d6ee31d13acd1bdfbf32c17624be",
-"/": "b3e7d6ee31d13acd1bdfbf32c17624be",
-"main.dart.js": "6fab9441b5c0ed4d4b731e89b96f539e",
-"favicon.png": "5dcef449791fa27946b3d35ad8803796",
-"icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
-"icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
-"manifest.json": "71c0ad9437952093351e5797e5032e9a",
-"assets/AssetManifest.json": "2efbb41d7877d10aac9d091f58ccd7b9",
-"assets/NOTICES": "b87e7ceb9de555cb3775cbfd1db2618c",
-"assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
-"assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "6d342eb68f170c97609e9da345464e5e",
-"assets/fonts/MaterialIcons-Regular.otf": "1288c9e28052e028aba623321f7826ac"
+  "pages/version.json": "6dff225a377191a79ea4369e2c2fed7c",
+  "pages/index.html": "b3e7d6ee31d13acd1bdfbf32c17624be",
+  "/": "b3e7d6ee31d13acd1bdfbf32c17624be",
+  "pages/main.dart.js": "6fab9441b5c0ed4d4b731e89b96f539e",
+  "pages/favicon.png": "5dcef449791fa27946b3d35ad8803796",
+  "pages/icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
+  "pages/icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
+  "pages/manifest.json": "71c0ad9437952093351e5797e5032e9a",
+  "pages/assets/AssetManifest.json": "2efbb41d7877d10aac9d091f58ccd7b9",
+  "pages/assets/NOTICES": "b87e7ceb9de555cb3775cbfd1db2618c",
+  "pages/assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
+  "pages/assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "6d342eb68f170c97609e9da345464e5e",
+  "pages/assets/fonts/MaterialIcons-Regular.otf": "1288c9e28052e028aba623321f7826ac"
 };
 
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = [
   "/",
-"main.dart.js",
-"index.html",
-"assets/NOTICES",
-"assets/AssetManifest.json",
-"assets/FontManifest.json"];
+  "pages/main.dart.js",
+  "pages/index.html",
+  "pages/assets/NOTICES",
+  "pages/assets/AssetManifest.json",
+  "pages/assets/FontManifest.json"];
 // During install, the TEMP cache is populated with the application shell files.
 self.addEventListener("install", (event) => {
   self.skipWaiting();
   return event.waitUntil(
     caches.open(TEMP).then((cache) => {
       return cache.addAll(
-        CORE.map((value) => new Request(value + '?revision=' + RESOURCES[value], {'cache': 'reload'})));
+        CORE.map((value) => new Request(value + '?revision=' + RESOURCES[value], { 'cache': 'reload' })));
     })
   );
 });
@@ -41,8 +41,8 @@ self.addEventListener("install", (event) => {
 // During activate, the cache is populated with the temp files downloaded in
 // install. If this service worker is upgrading from one with a saved
 // MANIFEST, then use this to retain unchanged resource files.
-self.addEventListener("activate", function(event) {
-  return event.waitUntil(async function() {
+self.addEventListener("activate", function (event) {
+  return event.waitUntil(async function () {
     try {
       var contentCache = await caches.open(CACHE_NAME);
       var tempCache = await caches.open(TEMP);
@@ -120,7 +120,7 @@ self.addEventListener("fetch", (event) => {
     return onlineFirst(event);
   }
   event.respondWith(caches.open(CACHE_NAME)
-    .then((cache) =>  {
+    .then((cache) => {
       return cache.match(event.request).then((response) => {
         // Either respond with the cached resource, or perform a fetch and
         // lazily populate the cache.
