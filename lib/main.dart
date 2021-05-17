@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
           initName +=
               "    this.$key = json[\"$key\"].map((e)=>$subName(e)).toList();\n";
           jsonFunc +=
-              "    result[\"$key\"] = this.$key.json.map((e)=>e.json).toList();\n";
+              "    result[\"$key\"] = this.$key.map((e)=>e.json).toList();\n";
           subClass.add(jsonToDart(first, subName));
         } catch (e) {}
       }
