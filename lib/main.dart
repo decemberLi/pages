@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String jsonToDart(Map<String, dynamic> json, String name) {
     String result = "class ${name.upFirst} {\n";
     List<String> subClass = [];
-    String initName = "  $name(Map<String,dynamic> json) {\n";
+    String initName = "  ${name.upFirst}(Map<String,dynamic> json) {\n";
     String jsonFunc =
         "  Map<String,dynamic> get json {\n    var result = Map<String,dynamic>();\n";
     appendValue(String name, String key) {
