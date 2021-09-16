@@ -59,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
     String jsonFunc =
         "  Map<String,dynamic> get json {\n    var result = Map<String,dynamic>();\n";
     appendValue(String name, String key) {
-      result += "  $name $key;\n";
+      result += "  late $name $key;\n";
       initName += "    this.$key = json[\"$key\"] as $name;\n";
       jsonFunc += "    result[\"$key\"] = this.$key;\n";
     }
@@ -79,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
         appendValue("List<double>", key);
       } else if (value is Map<String, dynamic>) {
         var subName = name.upFirst + key.upFirst;
-        result += "  $subName $key;\n";
+        result += "  late $subName $key;\n";
         initName += "    this.$key = $subName(json[\"$key\"]);\n";
         jsonFunc += "    result[\"$key\"] = this.$key.json;\n";
         subClass.add(jsonToDart(value, subName));
@@ -87,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
         try {
           var first = value.first;
           var subName = name.upFirst + key.upFirst;
-          result += "  List<$subName> $key;\n";
+          result += "  late List<$subName> $key;\n";
           initName +=
               "    this.$key = json[\"$key\"].map((e)=>$subName(e)).toList();\n";
           jsonFunc +=
