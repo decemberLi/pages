@@ -87,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
         try {
           var first = value.first;
           var subName = name.upFirst + key.upFirst;
-          result += "  $subName $key;\n";
+          result += "  List<$subName> $key;\n";
           initName +=
               "    this.$key = json[\"$key\"].map((e)=>$subName(e)).toList();\n";
           jsonFunc +=
